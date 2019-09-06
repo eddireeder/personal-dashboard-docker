@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+
+  dashboard-postgres:
+    image: postgres
+    container_name: dashboard-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../postgres/postgres-data:/var/lib/postgresql/data:consistent
+    logging:
+      options:
+        max-size: "50m"
+
+  dashboard-app:
+    build: ../app
+    container_name: dashboard-app
+    depends_on:
+      - dashboard-api
+    restart: always
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    logging:
+      options:
+        max-size: "50m"
+
+  dashboard-api:
+    build: ../api
+    container_name: dashboard-api
+    depends_on:
+      - dashboard-postgres
+    restart: always
+    expose:
+      - 3001
+    ports:
+      - "3001:3001"
+    environment:
+      - POSTGRES_HOST=dashboard-postgres
+      - PORT=3001
+      - SESSION_SECRET=thisisverysecret
+    logging:
+      options:
+        max-size: "50m"

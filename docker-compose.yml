@@ -18,33 +18,14 @@ services:
     build: ../app
     container_name: dashboard-app
     depends_on:
-      - dashboard-api
+      - dashboard-postgres
     restart: always
     expose:
       - 80
     ports:
       - "80:80"
     environment:
-      - PORT=80
-      - DANGEROUSLY_DISABLE_HOST_CHECK=true
-    logging:
-      options:
-        max-size: "50m"
-
-  dashboard-api:
-    build: ../api
-    container_name: dashboard-api
-    depends_on:
-      - dashboard-postgres
-    restart: always
-    expose:
-      - 3001
-    ports:
-      - "3001:3001"
-    environment:
       - POSTGRES_HOST=dashboard-postgres
-      - PORT=3001
-      - SESSION_SECRET=thisisverysecret
     logging:
       options:
         max-size: "50m"
